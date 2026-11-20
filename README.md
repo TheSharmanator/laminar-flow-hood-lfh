@@ -95,7 +95,6 @@ The manual is generated from [`manual/`](manual): `build_site.py` writes `site/i
 Models/             reference .scad, P01–P18 wrappers + STLs
   Test/             fit-test coupons and gauge
   Documents/        manual PDFs and build specs (v5 = current)
-slicer/3mf/         slicer project files
 manual/             manual generator, renders, check scripts
 docs/               handover notes, feedback log, archive
 ```
@@ -106,6 +105,10 @@ docs/               handover notes, feedback log, archive
 - Fit tests (P00, P00b) passed on 17 Nov 2026, so no parameter changes were needed.
 - **Untested:** clear PETG visor settings, and the optional air spreader (add one only if the bottom row of the flame test leans noticeably harder).
 - Manual renders were made from the 31 Oct STLs. Released docs are versioned and never overwritten.
+
+## Licence
+
+[Creative Commons Attribution-NonCommercial 4.0 (CC BY-NC 4.0)](LICENSE). You may copy, modify and share the designs and documents, but you must **credit the author (TheSharmanator, with a link to this repo)** and you may **not use them commercially**. Building one for your own use is fine.
 
 ## Credit
 

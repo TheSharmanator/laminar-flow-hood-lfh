@@ -9,3 +9,5 @@ manual/out/
 manual/logs_*.txt
 manual/lfh_ref.scad
 node_modules/
+slicer/
+_from_chat/
