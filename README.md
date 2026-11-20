@@ -20,9 +20,9 @@
 
 | You want to… | Open |
 |---|---|
-| **Build it** | [`Models/Documents/LFH_v1_Build_Manual_v5.pdf`](Models/Documents/LFH_v1_Build_Manual_v5.pdf) |
+| **Build it** | [`Build Manuals/LFH_v1_Build_Manual_v5.pdf`](Build%20Manuals/LFH_v1_Build_Manual_v5.pdf) |
 | **Print it** | the STLs in [`Models/`](Models) (start with `Test/P00_coupons.stl`) |
-| **Modify the design** | [`Models/lfh_v1_reference.scad`](Models/lfh_v1_reference.scad) and the [v5 build spec](Models/Documents/LFH-v1_OpenSCAD_build_spec_v5.md) |
+| **Modify the design** | [`Models/lfh_v1_reference.scad`](Models/lfh_v1_reference.scad) and the [v5 build spec](Build%20Manuals/LFH-v1_OpenSCAD_build_spec_v5.md) |
 | **Understand the decisions** | [`docs/HANDOVER.md`](docs/HANDOVER.md) |
 
 ## Design at a glance
@@ -94,7 +94,7 @@ The manual is generated from [`manual/`](manual): `build_site.py` writes `site/i
 ```
 Models/             reference .scad, P01–P18 wrappers + STLs
   Test/             fit-test coupons and gauge
-  Documents/        manual PDFs and build specs (v5 = current)
+Build Manuals/      manual PDFs and build specs (v5 = current)
 manual/             manual generator, renders, check scripts
 docs/               handover notes, feedback log, archive
 ```
