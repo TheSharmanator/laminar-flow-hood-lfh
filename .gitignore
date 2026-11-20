@@ -1,0 +1,11 @@
+*.gcode
+~$*
+*.lnk
+Thumbs.db
+desktop.ini
+manual/stl_print/
+manual/stl_asm/
+manual/out/
+manual/logs_*.txt
+manual/lfh_ref.scad
+node_modules/
