@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LFH v1 Build Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Workshop manual: cool steel neutrals, clamp-orange for sequence and checks, renders on light plates. */
+  --bg: #EDF0F3;
+  --panel: #FFFFFF;
+  --ink: #16202B;
+  --muted: #586777;
+  --line: #D2D9E1;
+  --accent: #B8561F;
+  --steel: #46658A;
+  --plate: #F8F8F8;
+  --ok: #2F7A55;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F151C; --panel: #17202A; --ink: #E5EBF1; --muted: #98A6B4; --line: #2A3643;
+    --accent: #E9814A; --steel: #86A9CD; --plate: #F3F4F5; --ok: #62C493; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F151C; --panel: #17202A; --ink: #E5EBF1; --muted: #98A6B4; --line: #2A3643;
+  --accent: #E9814A; --steel: #86A9CD; --plate: #F3F4F5; --ok: #62C493; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px 64px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 600; line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: 0.01em; }
+h2 { font-size: 2.1rem; text-transform: uppercase; }
+h3 { font-size: 1.45rem; }
+h4 { font-size: 1.3rem; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--steel); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+img { max-width: 100%; height: auto; display: block; }
+.plate { margin: 0; background: var(--plate); border-radius: 6px; display: grid; place-items: center; padding: 10px; }
+
+/* masthead */
+header.mast { padding: 36px 0 22px; display: grid; gap: 22px; }
+.mast .kicker { font: 500 0.8rem/1 var(--mono); color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+.mast h1 { font-size: clamp(2.6rem, 7vw, 4.4rem); text-transform: uppercase; }
+.mast .lede { color: var(--muted); font-size: 1.05rem; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.facts div { background: var(--panel); padding: 12px 14px; display: grid; gap: 2px; }
+.facts b { font: 600 1.6rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.facts span { color: var(--muted); font-size: 0.85rem; }
+.heroes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.heroes figure { margin: 0; display: grid; gap: 6px; }
+.heroes .plate { height: 100%; }
+.heroes figcaption { font-size: 0.85rem; color: var(--muted); }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 0 6px; border-top: 1px solid var(--line); }
+nav.toc a { font: 500 0.85rem/1 var(--mono); text-decoration: none; color: var(--ink); background: var(--panel); border: 1px solid var(--line); padding: 8px 10px; border-radius: 4px; }
+nav.toc a:hover { border-color: var(--accent); }
+
+section.block { padding-top: 44px; display: grid; gap: 18px; }
+.blockhead { display: grid; gap: 8px; border-bottom: 2px solid var(--ink); padding-bottom: 10px; }
+.blockhead p { color: var(--muted); }
+
+/* measure */
+.measure { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.mcard { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 10px; align-content: start; }
+.mcard h3 { display: flex; gap: 10px; align-items: baseline; }
+.mcard h3 .mono { color: var(--accent); font-size: 0.9rem; }
+.mcard ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.mcard code, td code { font-family: var(--mono); font-size: 0.85em; background: var(--bg); padding: 1px 4px; border-radius: 3px; }
+
+/* parts */
+.parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.part { min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+.part .plate { border-radius: 0; aspect-ratio: 4 / 3; display: block; padding: 8px; }
+.part .plate img { width: 100%; height: 100%; object-fit: contain; }
+.part.tpu { border-color: #B23A48; }
+.pbody { padding: 12px 14px 14px; display: grid; gap: 8px; align-content: start; }
+.pid { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--muted); }
+.pid .code { color: var(--accent); }
+.specs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 10px; margin: 0; }
+.specs div { display: grid; }
+.specs dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.specs dd { margin: 0; font-weight: 500; font-size: 0.92rem; }
+.note { font-size: 0.88rem; color: var(--muted); }
+
+table.petg { table-layout: fixed; }
+table.petg td { white-space: normal; overflow-wrap: anywhere; }
+/* manifest */
+.subhead { font-family: var(--display); font-size: 1.35rem; text-transform: uppercase; color: var(--steel); padding-top: 6px; }
+.mitems { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.mitem { min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+.mitem .plate { border-radius: 0; aspect-ratio: 4 / 3; display: block; padding: 10px; background: #FFFFFF; }
+.mitem .plate img { width: 100%; height: 100%; object-fit: contain; }
+.mbody { padding: 12px 14px 14px; display: grid; gap: 6px; align-content: start; }
+.mbody h3 { font-family: var(--body); font-size: 0.98rem; font-weight: 600; line-height: 1.3; letter-spacing: 0; }
+.mqty { color: var(--accent); font-size: 1.05rem; }
+.mspec { font-size: 0.9rem; }
+code.search { font-family: var(--mono); font-size: 0.85em; background: var(--bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--line); white-space: nowrap; }
+ul.bench { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.callout ul.bench b { font-family: var(--body); font-size: inherit; font-weight: 600; letter-spacing: 0; }
+
+/* tables */
+.tablewrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.93rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 0.78rem/1.2 var(--body); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td .must { color: var(--accent); font-weight: 600; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+
+/* steps */
+.stage { display: grid; gap: 12px; }
+.stagehead { display: grid; gap: 4px; padding-top: 12px; }
+.stagehead h3 { font-size: 1.6rem; text-transform: uppercase; color: var(--steel); }
+.stagehead p { color: var(--muted); }
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.step { min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); overflow: hidden; }
+.step .plate { border-radius: 0; min-height: 220px; }
+.step .plate img { width: 100%; max-height: 360px; object-fit: contain; }
+.sbody { padding: 16px 18px 18px; display: grid; gap: 10px; align-content: start; }
+.snum { font-size: 2.2rem; line-height: 1; color: var(--accent); font-family: var(--display); font-weight: 700; }
+ul.acts { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; counter-reset: act; }
+ul.acts li { counter-increment: act; position: relative; padding-left: 32px; }
+ul.acts li::before { content: counter(act); position: absolute; left: 0; top: 1px; font: 600 0.8rem/1 var(--mono); width: 22px; height: 22px; display: grid; place-items: center; border: 1.5px solid var(--ink); border-radius: 50%; }
+.check { border-left: 4px solid var(--ok); background: var(--bg); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 0.95rem; }
+.check span { display: block; font: 600 0.72rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ok); }
+
+/* test */
+.grid9 { width: 100%; max-width: 420px; height: auto; }
+.g-clamp { fill: #C2612A; }
+.g-media { fill: #E9ECEF; }
+.g-dots circle { fill: var(--steel); }
+.g-lab { font: 500 11px var(--mono); fill: #ffffff; }
+.testcard { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 12px; }
+.callout { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; padding: 14px 16px; display: grid; gap: 6px; }
+.callout b { font-family: var(--display); font-size: 1.15rem; font-weight: 600; letter-spacing: 0.02em; }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; display: grid; gap: 4px; }
+
+@media print {
+  nav.toc { display: none; }
+  .stage, ol.steps, section.block, .two { display: block; }
+  ol.steps > li, .stage > *, section.block > *, .two > * { margin-bottom: 12px; }
+  .step { display: block; }
+  .step .plate img { max-height: 230px; margin: 0 auto; }
+  .step .plate { min-height: 0; padding: 6px; }
+  .sbody { padding: 10px 14px 12px; gap: 6px; }
+  .blockhead, .step, .part, .mitem, .testcard, .mcard, .callout, tr, .heroes figure { break-inside: avoid; page-break-inside: avoid; }
+  .stagehead, .blockhead { break-after: avoid; page-break-after: avoid; }
+  section.block { padding-top: 20px; }
+  #manifest { break-before: page; page-break-before: always; }
+  .subhead { break-after: avoid; page-break-after: avoid; }
+  .keep { break-inside: avoid; page-break-inside: avoid; }
+  #manifest .mitems { display: block; font-size: 0; }
+  #manifest .mitem { display: inline-grid; width: calc((100% - 16px) / 3); margin: 0 8px 8px 0; vertical-align: top; font-size: 16px; }
+  #manifest .mitem:nth-child(3n) { margin-right: 0; }
+  #manifest .mitem .plate { aspect-ratio: 3 / 1; padding: 4px; }
+  .mbody { padding: 8px 10px 10px; gap: 4px; }
+  .mbody h3 { font-size: 0.85rem; }
+  .mspec, .mbody .note { font-size: 0.78rem; }
+}
+@media (max-width: 760px) {
+  table.stack { min-width: 0; }
+  table.stack thead { display: none; }
+  table.stack tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px; border-bottom: 1px solid var(--line); }
+  table.stack tr:last-child { border-bottom: 0; }
+  table.stack td { border: 0; padding: 0; }
+  table.stack td:nth-child(3) { grid-column: 2; grid-row: 1; }
+  table.stack td:nth-child(2), table.stack td:nth-child(4) { grid-column: 1 / -1; }
+  .facts { grid-template-columns: 1fr 1fr; }
+  .facts div:last-child { grid-column: 1 / -1; }
+  .heroes { grid-template-columns: 1fr 1fr; }
+  .heroes figure:last-child { grid-column: 1 / -1; }
+  .step { grid-template-columns: 1fr; }
+  .step .plate { min-height: 0; }
+  h2 { font-size: 1.8rem; }
+}
+@media (max-width: 420px) {
+  .wrap { padding: 0 16px 48px; }
+  .specs { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="kicker">Laminar flow hood · v1 final · measured parts · Centauri Carbon 2</div>
+  <h1>LFH v1 Build Manual</h1>
+  <p class="lede">A fully printed, Gordotek-style hood: HEPA filter on the front, 150 mm inline fan blowing down into a sealed box, with an intake bell and pre-filter on top, and a detachable clear visor on 6 × 3 mm magnets. Built to the measured parts: a 343 × 295 HEPA and a 148 mm fan. Every check in the reference model passes at these sizes.</p>
+  <div class="facts">
+    <div><b class="mono">343 × 295</b><span>HEPA over foam, landscape (mm)</span></div>
+    <div><b>20</b><span>printed parts, 18 support-free</span></div>
+    <div><b>≈2.3 kg</b><span>PLA, + 0.35 kg clear PLA or PETG, a dab of TPU</span></div>
+    <div><b>12 × M4×40</b><span>socket caps + captive nuts</span></div>
+    <div><b class="mono">45°</b><span>steady flame lean: the pass mark</span></div>
+  </div>
+  <div class="heroes">
+    <figure><div class="plate"><img src="img/hero.png" alt="Finished hood from the front" width="608"></div><figcaption>Front: clear visor over the clamp frame and filter.</figcaption></figure>
+    <figure><div class="plate"><img src="img/hero_rear.png" alt="Finished hood from the rear" width="624"></div><figcaption>Rear: jigsaw back, rear feet, visor wing.</figcaption></figure>
+    <figure><div class="plate"><img src="img/exploded.png" alt="Exploded view of every part" width="621"></div><figcaption>Exploded: every part in its place.</figcaption></figure>
+  </div>
+  <nav class="toc" aria-label="Sections">
+    <a href="#manifest">1 · Manifest</a><a href="#measure">2 · Measured</a><a href="#parts">3 · Printed parts</a><a href="#settings">4 · Print settings</a><a href="#coupons">5 · Fit test</a><a href="#assembly">6 · Assembly</a><a href="#test">7 · Test</a>
+  </nav>
+</header>
+
+<section class="block" id="manifest">
+  <div class="blockhead"><h2>1 · Manifest</h2><p>Everything you need before the first print, apart from the printer. Photos and names are the actual listings used for this build.</p></div>
+  <h3 class="subhead">Bought parts</h3>
+  <div class="mitems">
+<article class="mitem">
+  <figure class="plate"><img src="img/m_fan.png" alt="150mm Inline Duct Fan 500m3/h or greater"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 1</div>
+    <h3>150mm Inline Duct Fan 500m3/h or greater</h3>
+    <p class="mspec">Ø150 mm duct. Body measured at 148.1 mm</p>
+    <p class="note">Sits in the top socket, blowing down into the box</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_speed.png" alt="Plug In Variable Fan Speed Controller Dimmer"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 1</div>
+    <h3>Plug In Variable Fan Speed Controller Dimmer</h3>
+    <p class="mspec">UK 3-pin plug-in. The fan plugs into it</p>
+    <p class="note">Sets the fan speed for the flame test</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_hepa.png" alt="Replacement Filter set True HEPA For Levoit LV-PUR131 Air Purifier LV-PUR131S UK"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 1 set</div>
+    <h3>Replacement Filter set True HEPA For Levoit LV-PUR131 Air Purifier LV-PUR131S UK</h3>
+    <p class="mspec">HEPA panel 343 × 295 mm over the foam, 22–25 mm thick. The set&#x27;s carbon panel isn&#x27;t used on the front</p>
+    <p class="note">Front face, under the clamp frame</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_floss.png" alt="1cm thick aquarium floss"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 1 sheet</div>
+    <h3>1cm thick aquarium floss</h3>
+    <p class="mspec">50 × 50 cm sheet, 10 mm thick. One sheet gives 4 discs of Ø224 mm</p>
+    <p class="note">Pre-filter disc in the intake bell</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_epdm.png" alt="Neoprene Self Adhesive Foam Sponge Strip Roll Tape Door Seal EPDM Weather Strips"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× ~1.4 m</div>
+    <h3>Neoprene Self Adhesive Foam Sponge Strip Roll Tape Door Seal EPDM Weather Strips</h3>
+    <p class="mspec">10 mm wide × 8 mm thick, solid sponge (not hollow D-section)</p>
+    <p class="note">Filter gasket, on the flange face along the guide line</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_bolts.png" alt="M4 socket cap bolts"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 12</div>
+    <h3>M4 socket cap bolts</h3>
+    <p class="mspec">M4 × 40 mm, ISO 4762. 3 mm hex key</p>
+    <p class="note">Clamp frame to the box flange</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_nuts.png" alt="M4 hex nuts"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 12</div>
+    <h3>M4 hex nuts</h3>
+    <p class="mspec">M4, 7 mm across flats, 3.2 mm thick (ISO 4032)</p>
+    <p class="note">Captive pockets behind the flange</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_magnets.png" alt="Magnets, Ø6 × 3 mm disc (N42 or stronger)"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 16</div>
+    <h3>Magnets, Ø6 × 3 mm disc (N42 or stronger)</h3>
+    <p class="mspec">Ø6 × 3 mm disc, N42 or stronger</p>
+    <p class="note">8 in the clamp front, 8 in the visor</p>
+  </div>
+</article><article class="mitem">
+  <figure class="plate"><img src="img/m_plastidip.png" alt="Plasti Dip"></figure>
+  <div class="mbody">
+    <div class="mqty mono">× 1 tin</div>
+    <h3>Plasti Dip</h3>
+    <p class="mspec">Brush-on, 250 ml tin (not the spray)</p>
+    <p class="note">Sealing coat inside the box</p>
+  </div>
+</article>
+  </div>
+  <div class="keep">
+  <h3 class="subhead">Filament and consumables</h3>
+  <div class="tablewrap"><table class="stack">
+    <thead><tr><th>Item</th><th>Spec</th><th>Qty</th><th>Search for</th></tr></thead>
+    <tbody><tr><td><b>PLA filament</b><br><span class="note">Box, back, clamp, socket, bell, lid, test parts</span></td><td>1.75 mm. PLA+ is fine</td><td class="num">≈2.3 kg</td><td><code class="search">PLA filament 1.75mm</code></td></tr><tr><td><b>Clear PLA or clear PETG filament</b><br><span class="note">Visor halves V1, V2</span></td><td>1.75 mm. PETG settings in section 4</td><td class="num">≈0.35 kg (PETG ≈0.36 kg)</td><td><code class="search">clear PETG filament 1.75mm</code></td></tr><tr><td><b>TPU filament</b><br><span class="note">Fan gasket ring</span></td><td>95A, 1.75 mm</td><td class="num">~5 g</td><td><code class="search">TPU 95A filament 1.75mm</code></td></tr><tr><td><b>Thin cyanoacrylate (superglue)</b><br><span class="note">Every seam, the nuts, the magnets</span></td><td>Water-thin</td><td class="num">1 bottle</td><td><code class="search">thin Cyanoacrylate</code></td></tr><tr><td><b>Silicone sealant</b><br><span class="note">Back channel, socket flange, gasket join</span></td><td>Neutral-cure, low-odour. Not the vinegar-smelling acetoxy type</td><td class="num">1 small tube</td><td><code class="search">neutral cure silicone</code></td></tr></tbody></table></div>
+  </div>
+  <div class="callout"><b>Kit for the bench</b><ul class="bench"><li><b>Flat surface</b> · Glass, worktop or the printer plate. It&#x27;s the end stop for every slide-together joint</li><li><b>3 mm hex key</b> · For the M4 socket caps</li><li><b>Masking tape</b> · Masks the flange face before the Plasti Dip</li><li><b>Small paintbrush</b> · For the brush-on Plasti Dip</li><li><b>Sharp knife or scissors</b> · Cuts the floss disc and the EPDM strip</li><li><b>Lighter and incense stick</b> · The flame and smoke tests</li></ul></div>
+</section>
+
+<section class="block" id="measure">
+  <div class="blockhead"><h2>2 · Measured</h2><p>Taken from the real parts on 31 Oct 2026. Every part in this manual is built from these numbers.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Part</th><th>Measurement</th><th>Value</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>HEPA</td><td>Over the edge foam</td><td class="num">343 × 295</td><td>Clamp walls, 0.5 mm clearance so they just kiss the foam</td></tr>
+      <tr><td>HEPA</td><td>Cardboard frame</td><td class="num">339 × 291</td><td>Gasket position, box opening</td></tr>
+      <tr><td>HEPA</td><td>Frame border, fibrous face</td><td class="num">10.8</td><td>10 mm gasket, outer edge flush with the cardboard edge</td></tr>
+      <tr><td>HEPA</td><td>Thickness</td><td class="num">22–25</td><td>Designed at 22. The gasket takes up the rest</td></tr>
+      <tr><td>Fan</td><td>Diameter, end to end</td><td class="num">148.1</td><td>Socket bore 148.6, bell sleeve 148.5</td></tr>
+      <tr><td>Fan</td><td>Length</td><td class="num">150</td><td></td></tr>
+      <tr><td>Fan</td><td>Cable gland</td><td class="num">98 up from the outlet, Ø11.5</td><td>Clear of the socket and the bell, so neither needs a cut-out</td></tr>
+    </tbody></table></div>
+</section>
+
+<section class="block" id="parts">
+  <div class="blockhead"><h2>3 · Printed parts</h2><p>Each card shows the part in its print pose on a 256 mm bed. Codes are debossed on the parts. Quarters are numbered clockwise <b>as seen from the front</b>: 1 top-left, 2 top-right, 3 bottom-right, 4 bottom-left.</p></div>
+  <div class="parts">
+<article class="part">
+  <figure class="plate"><img src="img/print_coupons.png" alt="Test coupons + gauge G1 in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P00</span><span class="code mono">coupons</span></div>
+    <h3>Test coupons + gauge G1</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flat</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>62 g</dd></div>
+    </dl>
+    <p class="note">Print first. Fit checks below.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_GAUGE2.png" alt="Sleeve gauge G2 in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P00b</span><span class="code mono">G2</span></div>
+    <h3>Sleeve gauge G2</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flat</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>15 g</dd></div>
+    </dl>
+    <p class="note">10-minute print.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_Q1.png" alt="Box quarter, top-left in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P01</span><span class="code mono">Q1</span></div>
+    <h3>Box quarter, top-left</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flange</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>5 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>259 g</dd></div>
+    </dl>
+    <p class="note">Half fan hole. Supports: auto.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_Q2.png" alt="Box quarter, top-right in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P02</span><span class="code mono">Q2</span></div>
+    <h3>Box quarter, top-right</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flange</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>5 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>265 g</dd></div>
+    </dl>
+    <p class="note">Half fan hole. Supports: auto.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_Q3.png" alt="Box quarter, bottom-right in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P03</span><span class="code mono">Q3</span></div>
+    <h3>Box quarter, bottom-right</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flange</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>5 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>341 g</dd></div>
+    </dl>
+    <p class="note">Rear foot.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_Q4.png" alt="Box quarter, bottom-left in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P04</span><span class="code mono">Q4</span></div>
+    <h3>Box quarter, bottom-left</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flange</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>5 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>340 g</dd></div>
+    </dl>
+    <p class="note">Rear foot.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_B1.png" alt="Back quarter (behind Q1) in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P05</span><span class="code mono">B1</span></div>
+    <h3>Back quarter (behind Q1)</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Outer face</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>63 g</dd></div>
+    </dl>
+    <p class="note">Ridges up.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_B2.png" alt="Back quarter (behind Q2) in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P06</span><span class="code mono">B2</span></div>
+    <h3>Back quarter (behind Q2)</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Outer face</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>63 g</dd></div>
+    </dl>
+    <p class="note">Ridges up.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_B3.png" alt="Back quarter (behind Q3) in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P07</span><span class="code mono">B3</span></div>
+    <h3>Back quarter (behind Q3)</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Outer face</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>63 g</dd></div>
+    </dl>
+    <p class="note">Ridges up.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_B4.png" alt="Back quarter (behind Q4) in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P08</span><span class="code mono">B4</span></div>
+    <h3>Back quarter (behind Q4)</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Outer face</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>63 g</dd></div>
+    </dl>
+    <p class="note">Ridges up.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_C1.png" alt="Clamp quarter, top-left in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P09</span><span class="code mono">C1</span></div>
+    <h3>Clamp quarter, top-left</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Front face</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>3 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>92 g</dd></div>
+    </dl>
+    <p class="note">Show face on the bed.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_C2.png" alt="Clamp quarter, top-right in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P10</span><span class="code mono">C2</span></div>
+    <h3>Clamp quarter, top-right</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Front face</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>3 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>92 g</dd></div>
+    </dl>
+    <p class="note">Show face on the bed.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_C3.png" alt="Clamp quarter, bottom-right in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P11</span><span class="code mono">C3</span></div>
+    <h3>Clamp quarter, bottom-right</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Front face</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>3 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>92 g</dd></div>
+    </dl>
+    <p class="note">Show face on the bed.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_C4.png" alt="Clamp quarter, bottom-left in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P12</span><span class="code mono">C4</span></div>
+    <h3>Clamp quarter, bottom-left</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Front face</dd></div>
+      <div><dt>Walls</dt><dd>4</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>3 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>92 g</dd></div>
+    </dl>
+    <p class="note">Show face on the bed.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_SOCKET.png" alt="Fan socket in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P13</span><span class="code mono">SOCKET</span></div>
+    <h3>Fan socket</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Base flange</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>135 g</dd></div>
+    </dl>
+    <p class="note">Ledge carries the fan.</p>
+  </div>
+</article><article class="part tpu">
+  <figure class="plate"><img src="img/print_RING.png" alt="Fan gasket ring in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P14</span><span class="code mono">RING</span></div>
+    <h3>Fan gasket ring</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Flat</dd></div>
+      <div><dt>Walls</dt><dd>solid</dd></div>
+      <div><dt>Infill</dt><dd>100%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>TPU 95A</dd></div>
+      <div><dt>Mass</dt><dd>4 g</dd></div>
+    </dl>
+    <p class="note">25–40 mm/s. Feed direct, not via CANVAS.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_BELL.png" alt="Intake bell in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P15</span><span class="code mono">BELL</span></div>
+    <h3>Intake bell</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Mouth (grid)</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>3 mm</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>189 g</dd></div>
+    </dl>
+    <p class="note">Grid prints first.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_LID.png" alt="Intake lid in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P16</span><span class="code mono">LID</span></div>
+    <h3>Intake lid</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Grille face</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>15%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>PLA</dd></div>
+      <div><dt>Mass</dt><dd>96 g</dd></div>
+    </dl>
+    <p class="note">Lugs chamfered, no support.</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_V1.png" alt="Visor, left half in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P17</span><span class="code mono">V1</span></div>
+    <h3>Visor, left half</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Canopy top</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>100%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>Clear PLA / PETG</dd></div>
+      <div><dt>Mass</dt><dd>177 g</dd></div>
+    </dl>
+    <p class="note">Owns the jigsaw knobs. Clear PLA or clear PETG settings (section 4).</p>
+  </div>
+</article><article class="part">
+  <figure class="plate"><img src="img/print_V2.png" alt="Visor, right half in print pose on a 256 mm bed" width="560"></figure>
+  <div class="pbody">
+    <div class="pid"><span class="mono">P18</span><span class="code mono">V2</span></div>
+    <h3>Visor, right half</h3>
+    <dl class="specs">
+      <div><dt>Bed face</dt><dd>Canopy top</dd></div>
+      <div><dt>Walls</dt><dd>3</dd></div>
+      <div><dt>Infill</dt><dd>100%</dd></div>
+      <div><dt>Brim</dt><dd>none</dd></div>
+      <div><dt>Material</dt><dd>Clear PLA / PETG</dd></div>
+      <div><dt>Mass</dt><dd>176 g</dd></div>
+    </dl>
+    <p class="note">Clear PLA or clear PETG settings (section 4).</p>
+  </div>
+</article>
+  </div>
+</section>
+
+<section class="block" id="settings">
+  <div class="blockhead"><h2>4 · Print settings</h2><p>ElegooSlicer or OrcaSlicer. Start from the stock CC2 <b>0.20 mm Standard</b> profile with your PLA preset, then change only these. Per-part walls, infill and brim are on the part cards.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Setting</th><th>Value</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Nozzle / plate</td><td class="num">0.4 mm · textured PEI</td><td>Stock</td></tr>
+      <tr><td>Layer / first layer</td><td class="num">0.20 / 0.20 mm</td><td></td></tr>
+      <tr><td>Supports</td><td class="num"><span class="must">Off</span>, except <span class="must">P01 + P02: Auto</span></td><td>P01 and P02 need auto supports for the top of the fan hole. Every other part is support-free in its pose</td></tr>
+      <tr><td>Elephant foot compensation</td><td class="num"><span class="must">0.15 mm</span></td><td>Joints and the gasket face start on the first layers</td></tr>
+      <tr><td>Outer wall speed</td><td class="num">≤ 120 mm/s</td><td>Dovetail accuracy</td></tr>
+      <tr><td>Seam</td><td class="num">Aligned</td><td>Keep it off dovetail faces. Paint it onto an outside corner if it wanders</td></tr>
+      <tr><td>Sparse infill</td><td class="num">Gyroid 15%</td><td></td></tr>
+      <tr><td>Top / bottom shells</td><td class="num">5 / 4</td><td></td></tr>
+      <tr><td>Box quarter wall loops</td><td class="num">4</td><td>Makes the 3 mm walls solid, which helps airtightness</td></tr>
+      <tr><td>Chamber / grille</td><td class="num">PLA preset</td><td>PLA wants cooling</td></tr>
+      <tr><td>Visor (clear PLA)</td><td class="num">100% · 6/6 shells · +10 °C</td><td>Outer wall 60 mm/s, the rest ≤ 80, part fan about 50%. A smooth plate gives a glossier canopy; the textured plate frosts it. Expect translucent, not glass</td></tr>
+      <tr><td>TPU ring</td><td class="num">95A · 25–40 mm/s · 100%</td><td>Stock TPU profile. If you run the CANVAS unit, feed TPU direct</td></tr>
+    </tbody></table></div>
+  <div class="keep">
+  <h3 class="subhead">Clear PETG visor (P17, P18), instead of clear PLA</h3>
+  <p class="note">Tougher than PLA and takes IPA wipe-downs better. Same STLs, same canopy-down pose, no supports. Start from the stock CC2 0.20 mm Standard process with the stock PETG filament profile, then change only these.</p>
+  </div>
+  <div class="tablewrap"><table class="petg">
+    <colgroup><col style="width:22%"><col style="width:33%"><col style="width:45%"></colgroup>
+    <thead><tr><th>Setting</th><th>Value</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Filament prep</td><td class="num"><span class="must">Dry 65 °C · 4–6 h</span></td><td>Damp PETG bubbles and hazes, and clear shows every bubble. Print from a dry box</td></tr>
+      <tr><td>Nozzle</td><td class="num">250 °C (first layer 245)</td><td>Hotter fuses the lines, and fused lines are what make it clear. Stay inside the spool's range</td></tr>
+      <tr><td>Bed</td><td class="num">75 °C (first layer 80)</td><td></td></tr>
+      <tr><td>Plate</td><td class="num">Textured PEI</td><td>Smooth PEI <b>only</b> with glue stick: PETG can weld to it and tear the coating. Smooth is glossier, textured frosts</td></tr>
+      <tr><td>Walls / infill</td><td class="num">3 · 100% aligned rectilinear</td><td>No air gaps between lines</td></tr>
+      <tr><td>Top / bottom shells</td><td class="num">6 / 6</td><td></td></tr>
+      <tr><td>Flow ratio</td><td class="num"><span class="must">+3–5%</span></td><td>Squeezes out the gaps. Back off if the top surface ridges</td></tr>
+      <tr><td>Speeds</td><td class="num">Outer 40 · inner 60 · infill 80 · first layer 20 mm/s</td><td>Slow lines lie down cleaner</td></tr>
+      <tr><td>Part cooling fan</td><td class="num">30% (bridges/overhangs 80%)</td><td>Less fan, better fusion</td></tr>
+      <tr><td>Retraction / wipe</td><td class="num">Stock PETG · wipe on</td><td>PETG strings</td></tr>
+      <tr><td>Z-hop / ironing</td><td class="num">0.4 mm / off</td><td>No nozzle drag or haze on the clear faces</td></tr>
+      <tr><td>Elephant foot / brim</td><td class="num">0.15 mm / none</td><td>As PLA</td></tr>
+      <tr><td>Chamber / lid</td><td class="num">Closed is fine</td><td>PETG doesn't need the cooling PLA does</td></tr>
+    </tbody></table></div>
+  <div class="callout"><b>PETG notes</b><p>Expect frosted-clear rather than glass, usually a touch clearer than clear PLA. The visor clearances were proven in PLA and PETG prints a hair fat, so ease a snug V1/V2 knob joint with a file. Thin superglue grips PETG less reliably: scuff the faces first, or bed the magnets in 2-part epoxy.</p></div>
+  <div class="callout"><b>Print order</b><p>P00 + P00b first. Then the box quarters (longest prints, about 227 mm tall), then everything else in any order.</p></div>
+</section>
+
+<section class="block" id="coupons">
+  <div class="blockhead"><h2>5 · Fit test (P00, P00b)</h2><p>Half an hour of plastic before 30-odd hours of plastic. Any tweak goes back to the OpenSCAD project as a parameter change.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Test</th><th>Pass</th><th>If it fails</th></tr></thead>
+    <tbody>
+      <tr><td>S tongue into S slot</td><td>Slides home by hand, no slop</td><td>Tight: <code>CLR</code> +0.05. Sloppy: −0.05</td></tr>
+      <tr><td>L tongue into S slot</td><td><span class="must">Must not go in</span></td><td>This is the anti-misassembly coding. Reduce <code>CLR</code></td></tr>
+      <tr><td>Jigsaw tab</td><td>Presses in and holds flat</td><td><code>JIG_CLR</code> ±0.05</td></tr>
+      <tr><td>M4 nut</td><td>Drops in, sits flush</td><td><code>NUT_AF</code> ±0.1</td></tr>
+      <tr><td>M4 bolt</td><td>Passes freely, head sits in the counterbore</td><td><code>BOLT_HOLE</code> / <code>CB_D</code></td></tr>
+      <tr><td>Gauge G1 on the fan body</td><td>Slides on with a whisker of clearance</td><td><code>SOCK_CLEAR</code></td></tr>
+      <tr><td>Gauge G2 on the fan's intake end</td><td>Pushes on and grips</td><td>Grip-rib height (0.3)</td></tr>
+    </tbody></table></div>
+</section>
+
+<section class="block" id="assembly">
+  <div class="blockhead"><h2>6 · Assembly</h2><p>18 steps, each with no more than two actions and one check. Don't move on until the check passes. Everything you need is in section 1.</p></div>
+<section class="stage" id="stage-box"><div class="stagehead"><h3>Box</h3><p>Flange-down on a flat surface (glass, worktop, the printer plate). Every piece drops in from above; the surface is the end stop.</p></div><ol class="steps">
+<li class="step" id="step-1">
+  <figure class="plate"><img src="img/s_q1.png" alt="Step 1: Start with Q1 and Q2"></figure>
+  <div class="sbody">
+    <div class="snum mono">01</div>
+    <h4>Start with Q1 and Q2</h4>
+    <ul class="acts"><li>Stand <b>Q2</b> flange-down on the flat surface.</li><li>Lower <b>Q1</b> in from above so its dovetail drops into Q2's slot.</li></ul>
+    <p class="check"><span>Check</span>Both flanges sit flat. No rock.</p>
+  </div>
+</li>
+<li class="step" id="step-2">
+  <figure class="plate"><img src="img/s_q3.png" alt="Step 2: Add Q3"></figure>
+  <div class="sbody">
+    <div class="snum mono">02</div>
+    <h4>Add Q3</h4>
+    <ul class="acts"><li>Lower <b>Q3</b> alongside Q2 the same way, sliding its slot down over Q2's tongue.</li></ul>
+    <p class="check"><span>Check</span>The tongue disappears into the slot all the way to the surface.</p>
+  </div>
+</li>
+<li class="step" id="step-3">
+  <figure class="plate"><img src="img/s_q4.png" alt="Step 3: Q4 goes in last"></figure>
+  <div class="sbody">
+    <div class="snum mono">03</div>
+    <h4>Q4 goes in last</h4>
+    <ul class="acts"><li>Lower <b>Q4</b> into the gap. It engages two seams at once.</li></ul>
+    <p class="check"><span>Check</span>All four flanges flat, seams closed. If Q4 refuses, something is in the wrong spot. That is the coding doing its job.</p>
+  </div>
+</li>
+<li class="step" id="step-4">
+  <figure class="plate"><img src="img/s_tube.png" alt="Step 4: Glue the box"></figure>
+  <div class="sbody">
+    <div class="snum mono">04</div>
+    <h4>Glue the box</h4>
+    <ul class="acts"><li>Run thin superglue along every seam, inside and out, including the four flange seams.</li><li>Leave it 10 minutes without moving it.</li></ul>
+    <p class="check"><span>Check</span>Rap the walls. Nothing creaks or shifts.</p>
+  </div>
+</li>
+</ol></section>
+<section class="stage" id="stage-back"><div class="stagehead"><h3>Back</h3><p>Same flat surface. The back goes on rear-edge down into a silicone-filled channel.</p></div><ol class="steps">
+<li class="step" id="step-5">
+  <figure class="plate"><img src="img/s_back.png" alt="Step 5: Assemble the back plate"></figure>
+  <div class="sbody">
+    <div class="snum mono">05</div>
+    <h4>Assemble the back plate</h4>
+    <ul class="acts"><li>Lay <b>B1–B4</b> ridges-up and press the jigsaw tabs together.</li><li>Wick thin superglue along the cross seam.</li></ul>
+    <p class="check"><span>Check</span>Plate flat. The U-channel runs unbroken all round.</p>
+  </div>
+</li>
+<li class="step" id="step-6">
+  <figure class="plate"><img src="img/s_backjoin.png" alt="Step 6: Fit the back"></figure>
+  <div class="sbody">
+    <div class="snum mono">06</div>
+    <h4>Fit the back</h4>
+    <ul class="acts"><li>Run a continuous bead of neutral-cure silicone along the bottom of the U-channel.</li><li>Lower the box in, rear edge first, and weight it.</li></ul>
+    <p class="check"><span>Check</span>Silicone squeezes out on both sides all round. Leave 24 h.</p>
+  </div>
+</li>
+</ol></section>
+<section class="stage" id="stage-top"><div class="stagehead"><h3>Top and seal</h3><p>Box upright from here on.</p></div><ol class="steps">
+<li class="step" id="step-7">
+  <figure class="plate"><img src="img/s_socket.png" alt="Step 7: Fit the fan socket"></figure>
+  <div class="sbody">
+    <div class="snum mono">07</div>
+    <h4>Fit the fan socket</h4>
+    <ul class="acts"><li>Glue the <b>socket</b> flange inside the engraved ring on the top (gland notch, if there is one, to the back).</li><li>Run a silicone bead round the flange edge.</li></ul>
+    <p class="check"><span>Check</span>Bead fully closed. No gaps at the top seam.</p>
+  </div>
+</li>
+<li class="step" id="step-8">
+  <figure class="plate"><img src="img/s_dip.png" alt="Step 8: Seal the inside"></figure>
+  <div class="sbody">
+    <div class="snum mono">08</div>
+    <h4>Seal the inside</h4>
+    <ul class="acts"><li>Mask the flange front face, where the gasket goes.</li><li>Stir the tin, then brush 2–3 thin coats of Plasti Dip inside, through the front opening. Give each coat about 30 minutes.</li></ul>
+    <p class="check"><span>Check</span>Torch inside: no bare seam lines. Peel the masking before it fully cures.</p>
+  </div>
+</li>
+</ol></section>
+<section class="stage" id="stage-front"><div class="stagehead"><h3>Clamp, nuts, gasket</h3><p>The filter seal is the only seal that really matters. Unfiltered air leaking here goes straight onto your work.</p></div><ol class="steps">
+<li class="step" id="step-9">
+  <figure class="plate"><img src="img/s_clamp.png" alt="Step 9: Build the clamp frame"></figure>
+  <div class="sbody">
+    <div class="snum mono">09</div>
+    <h4>Build the clamp frame</h4>
+    <ul class="acts"><li>Front-face-down on the flat surface, lower <b>C1–C4</b> together like the box.</li><li>Wick thin superglue into the four seams.</li></ul>
+    <p class="check"><span>Check</span>Frame lies flat with no rock.</p>
+  </div>
+</li>
+<li class="step" id="step-10">
+  <figure class="plate"><img src="img/s_nuts.png" alt="Step 10: Fit the captive nuts"></figure>
+  <div class="sbody">
+    <div class="snum mono">10</div>
+    <h4>Fit the captive nuts</h4>
+    <ul class="acts"><li>Drop an M4 nut into each of the 12 hex pockets on the back of the flange.</li><li>Lock each with a drop of superglue (keep it out of the thread).</li></ul>
+    <p class="check"><span>Check</span>A bolt from the front picks up every nut.</p>
+  </div>
+</li>
+<li class="step" id="step-11">
+  <figure class="plate"><img src="img/s_epdm.png" alt="Step 11: Lay the gasket"></figure>
+  <div class="sbody">
+    <div class="snum mono">11</div>
+    <h4>Lay the gasket</h4>
+    <ul class="acts"><li>Stick the 10 × 8 mm EPDM strip to the flange face with its <b>outer edge on the guide line</b>, starting and finishing at a bottom corner.</li><li>Butt the ends tight and dab silicone on the join.</li></ul>
+    <p class="check"><span>Check</span>Strip follows the guide line all round, not stretched at the corners.</p>
+  </div>
+</li>
+<li class="step" id="step-12">
+  <figure class="plate"><img src="img/s_filter.png" alt="Step 12: Mount the filter"></figure>
+  <div class="sbody">
+    <div class="snum mono">12</div>
+    <h4>Mount the filter</h4>
+    <ul class="acts"><li>Seat the filter on the gasket, <b>fibrous pre-filter face towards the box</b>.</li><li>Fit the clamp and run the 12 bolts in a criss-cross until the clamp touches the flange all round.</li></ul>
+    <p class="check"><span>Check</span>Clamp touches the flange everywhere. That is the designed squeeze: 5.5 mm at the thin spots, 2.5 mm at the thick ones. Stop tightening.</p>
+  </div>
+</li>
+</ol></section>
+<section class="stage" id="stage-fan"><div class="stagehead"><h3>Fan and intake</h3></div><ol class="steps">
+<li class="step" id="step-13">
+  <figure class="plate"><img src="img/s_fan.png" alt="Step 13: Seat the fan"></figure>
+  <div class="sbody">
+    <div class="snum mono">13</div>
+    <h4>Seat the fan</h4>
+    <ul class="acts"><li>Lay the <b>TPU ring</b> on the socket ledge.</li><li>Lower the fan in, <b>airflow arrow pointing down</b>, gland towards the back.</li></ul>
+    <p class="check"><span>Check</span>Fan sits level on the ring and doesn't rock.</p>
+  </div>
+</li>
+<li class="step" id="step-14">
+  <figure class="plate"><img src="img/s_bell.png" alt="Step 14: Fit the bell"></figure>
+  <div class="sbody">
+    <div class="snum mono">14</div>
+    <h4>Fit the bell</h4>
+    <ul class="acts"><li>Push the <b>bell</b> over the fan's intake end until the stop lip lands on the rim, gland through the notch.</li></ul>
+    <p class="check"><span>Check</span>A gentle pull doesn't lift it.</p>
+  </div>
+</li>
+<li class="step" id="step-15">
+  <figure class="plate"><img src="img/s_bell.png" alt="Step 15: Disc and lid"></figure>
+  <div class="sbody">
+    <div class="snum mono">15</div>
+    <h4>Disc and lid</h4>
+    <ul class="acts"><li>Lay the Ø224 mm floss disc on the grid (carbon sheet underneath if you use one).</li><li>Fit the <b>lid</b>: push down through the slots, twist clockwise to the stop.</li></ul>
+    <p class="check"><span>Check</span>Lid won't lift. Disc edge clamped all round.</p>
+  </div>
+</li>
+</ol></section>
+<section class="stage" id="stage-visor"><div class="stagehead"><h3>Visor</h3><p>Detachable clear hood. It hangs by its rear lip on top of the clamp frame; the magnets just stop it getting knocked off.</p></div><ol class="steps">
+<li class="step" id="step-16">
+  <figure class="plate"><img src="img/s_vglue.png" alt="Step 16: Join the visor halves"></figure>
+  <div class="sbody">
+    <div class="snum mono">16</div>
+    <h4>Join the visor halves</h4>
+    <ul class="acts"><li>Canopy face down on the flat surface, lower <b>V2</b> onto V1's three jigsaw knobs.</li><li>Wick thin superglue along the canopy seam, the strip and the front rib.</li></ul>
+    <p class="check"><span>Check</span>Canopy flat across the seam. No step at the front edge.</p>
+  </div>
+</li>
+<li class="step" id="step-17">
+  <figure class="plate"><img src="img/s_mags.png" alt="Step 17: Clamp magnets"></figure>
+  <div class="sbody">
+    <div class="snum mono">17</div>
+    <h4>Clamp magnets</h4>
+    <ul class="acts"><li>Glue a 6 × 3 mm magnet into each of the 8 pockets on the clamp front, <b>all the same pole facing out</b>.</li><li>Test every one with a loose magnet before the glue goes off.</li></ul>
+    <p class="check"><span>Check</span>The loose magnet pulls onto all 8 with the same face.</p>
+  </div>
+</li>
+<li class="step" id="step-18">
+  <figure class="plate"><img src="img/s_vfit.png" alt="Step 18: Visor magnets, the foolproof way"></figure>
+  <div class="sbody">
+    <div class="snum mono">18</div>
+    <h4>Visor magnets, the foolproof way</h4>
+    <ul class="acts"><li>Stick one of the remaining 8 magnets onto each clamp magnet (it self-orients), and put a tiny dab of superglue at the bottom of each visor pocket.</li><li>Hang the visor on by its lip, press it home for 60 s, then lift it off. The magnets come with it, the right way round.</li></ul>
+    <p class="check"><span>Check</span>Visor clicks on, bolt heads land in their pockets, and it pulls off cleanly.</p>
+  </div>
+</li>
+</ol></section>
+</section>
+
+<section class="block" id="test">
+  <div class="blockhead"><h2>7 · Test</h2><p>The plastic is finished. Two quick tests. A lighter and an incense stick, no lab kit.</p></div>
+  <div class="two">
+    <div class="testcard">
+      <div class="snum mono">19</div>
+      <h4>Flame test</h4>
+      <ul class="acts"><li>With the visor on, hold a lighter flame 5–10 cm in front of the filter at each of the 9 points.</li><li>Turn the dial on the plug-in speed controller until the flame leans about 45° and settles.</li></ul>
+      <p class="check"><span>Check</span>About 45° and dead steady at all 9 points. A flame that dances means turbulence, so adjust the speed until it settles. If it only dances near the edges, check the clamp seal. The usable zone ends roughly 19 cm (7.5 in) out from the filter.</p>
+      <svg class="grid9" viewBox="0 0 380 330" role="img" aria-label="Filter face with a 3 by 3 grid of measuring points">
+  <rect x="2" y="2" width="376" height="326" rx="4" class="g-clamp"/>
+  <rect x="27" y="27" width="326" height="276" class="g-media"/>
+  <g class="g-dots">
+    <circle cx="81" cy="73" r="9"/><circle cx="190" cy="73" r="9"/><circle cx="299" cy="73" r="9"/>
+    <circle cx="81" cy="165" r="9"/><circle cx="190" cy="165" r="9"/><circle cx="299" cy="165" r="9"/>
+    <circle cx="81" cy="257" r="9"/><circle cx="190" cy="257" r="9"/><circle cx="299" cy="257" r="9"/>
+  </g>
+  <text x="190" y="320" text-anchor="middle" class="g-lab">Lighter 5–10 cm out at each point · flame leans ~45° and holds steady</text>
+</svg>
+    </div>
+    <div class="testcard">
+      <div class="snum mono">20</div>
+      <h4>Smoke and plates</h4>
+      <ul class="acts"><li>Draw an incense stick slowly round the clamp edge, then across the face.</li><li>Run an open-plate test in the airstream.</li></ul>
+      <p class="check"><span>Check</span>Smoke runs straight out with no curl-back at the edges, and no smoke escapes round the clamp. Plates stay clean. An aftermarket "H13" label is a claim, and the plates are the test of it.</p>
+      <div class="callout"><b>Air spreader inside the box</b><p>Not fitted in v1. If the flame leans much harder on the bottom row than the top, add a deflector under the fan outlet. Otherwise leave it out.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Renders are from the reference model at the measured dimensions. The OpenSCAD build spec is authoritative for geometry.</p>
+  <p>Box, back and clamp can each only go together one way. If a piece won't go, it's in the wrong place.</p>
+</footer>
+
+</div>
+</body>
+</html>

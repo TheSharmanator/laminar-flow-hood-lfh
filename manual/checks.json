@@ -1,0 +1,255 @@
+{
+ "bed_fit": {
+  "coupons": {
+   "env": [
+    154.6,
+    154.6,
+    20.0
+   ],
+   "vol_cm3": 55.4,
+   "watertight": true,
+   "ok": true
+  },
+  "GAUGE2": {
+   "env": [
+    153.5,
+    153.5,
+    10.0
+   ],
+   "vol_cm3": 11.9,
+   "watertight": true,
+   "ok": true
+  },
+  "Q1": {
+   "env": [
+    190.5,
+    162.5,
+    227.0
+   ],
+   "vol_cm3": 231.7,
+   "watertight": true,
+   "ok": true
+  },
+  "Q2": {
+   "env": [
+    186.5,
+    166.5,
+    227.0
+   ],
+   "vol_cm3": 237.6,
+   "watertight": true,
+   "ok": true
+  },
+  "Q3": {
+   "env": [
+    190.5,
+    162.5,
+    227.0
+   ],
+   "vol_cm3": 305.5,
+   "watertight": true,
+   "ok": true
+  },
+  "Q4": {
+   "env": [
+    186.5,
+    166.5,
+    227.0
+   ],
+   "vol_cm3": 304.6,
+   "watertight": true,
+   "ok": true
+  },
+  "B1": {
+   "env": [
+    175.9,
+    140.4,
+    9.0
+   ],
+   "vol_cm3": 77.6,
+   "watertight": true,
+   "ok": true
+  },
+  "B2": {
+   "env": [
+    164.4,
+    151.9,
+    9.0
+   ],
+   "vol_cm3": 78.0,
+   "watertight": true,
+   "ok": true
+  },
+  "B3": {
+   "env": [
+    178.9,
+    140.4,
+    9.0
+   ],
+   "vol_cm3": 78.3,
+   "watertight": true,
+   "ok": true
+  },
+  "B4": {
+   "env": [
+    164.4,
+    154.9,
+    9.0
+   ],
+   "vol_cm3": 78.0,
+   "watertight": true,
+   "ok": true
+  },
+  "C1": {
+   "env": [
+    190.5,
+    162.5,
+    31.5
+   ],
+   "vol_cm3": 164.4,
+   "watertight": true,
+   "ok": true
+  },
+  "C2": {
+   "env": [
+    186.5,
+    166.5,
+    31.5
+   ],
+   "vol_cm3": 164.5,
+   "watertight": true,
+   "ok": true
+  },
+  "C3": {
+   "env": [
+    190.5,
+    162.5,
+    31.5
+   ],
+   "vol_cm3": 165.1,
+   "watertight": true,
+   "ok": true
+  },
+  "C4": {
+   "env": [
+    186.5,
+    166.5,
+    31.5
+   ],
+   "vol_cm3": 164.9,
+   "watertight": true,
+   "ok": true
+  },
+  "SOCKET": {
+   "env": [
+    210.0,
+    210.0,
+    40.0
+   ],
+   "vol_cm3": 128.1,
+   "watertight": true,
+   "ok": true
+  },
+  "RING": {
+   "env": [
+    148.2,
+    148.2,
+    2.0
+   ],
+   "vol_cm3": 3.7,
+   "watertight": true,
+   "ok": true
+  },
+  "BELL": {
+   "env": [
+    227.0,
+    227.0,
+    82.0
+   ],
+   "vol_cm3": 160.4,
+   "watertight": true,
+   "ok": true
+  },
+  "LID": {
+   "env": [
+    231.4,
+    231.4,
+    20.4
+   ],
+   "vol_cm3": 85.7,
+   "watertight": true,
+   "ok": true
+  },
+  "V1": {
+   "env": [
+    198.0,
+    170.0,
+    164.9
+   ],
+   "vol_cm3": 142.8,
+   "watertight": true,
+   "ok": true
+  },
+  "V2": {
+   "env": [
+    186.5,
+    170.0,
+    164.9
+   ],
+   "vol_cm3": 141.6,
+   "watertight": true,
+   "ok": true
+  }
+ },
+ "bed_fit_pass": true,
+ "interference": [],
+ "interference_pass": true,
+ "slide": {
+  "Q1->Q2": 0.0,
+  "Q3->Q2": 0.0,
+  "Q4->Q3": 0.0,
+  "Q4->Q1": 0.0,
+  "C1->C2": 0.0,
+  "C3->C2": 0.0,
+  "C4->C3": 0.0,
+  "C4->C1": 0.0
+ },
+ "slide_pass": true,
+ "wrong_swap_clash_mm3": {
+  "Q3": 621.55,
+  "Q4": 621.55,
+  "B3": 294.97,
+  "B4": 294.97,
+  "C3": 118.5,
+  "C4": 118.5
+ },
+ "wrong_swap_pass": true,
+ "bayonet": {
+  "twist": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "past_stop": 35.2,
+  "lift": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "bayonet_pass": true,
+ "visor": {
+  "press_on": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "pull_off_max": 0
+ },
+ "visor_pass": true
+}
